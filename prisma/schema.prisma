@@ -1,0 +1,75 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+  relationMode = "prisma"
+}
+
+datasource db {
+  provider        = "mysql"
+  url             = env("DB_URL")
+}
+
+model Test {
+  id        Int      @id @default(autoincrement())
+  title      String    
+  subtitle      String    
+  description      String    
+  question_count      Int
+  order_no      Int    
+  active     Boolean
+  created_at  DateTime
+  updated_at     DateTime
+  results     Test_result[]
+  questions     Question[]
+}
+
+model Question {
+  id        Int        @id @default(autoincrement())
+  question     String
+  type     String
+  answer   String ?
+  EI_point      Int
+  SN_point      Int
+  TF_point      Int
+  JP_point      Int
+  created_at      DateTime
+  test      Test @relation(fields: [subject_id], references: [id])
+  subject_id      Int
+  order_no      Int
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username      String    
+  password      String    
+  role      String    
+  created_at  DateTime
+  deleted_at     DateTime
+}
+
+model Test_result {
+  id        Int        @id @default(autoincrement())
+  mbti        String
+  filename        String
+  createdAt        DateTime
+  updatedAt        DateTime
+  width        Int
+  height        Int
+  test      Test @relation(fields: [subject_id], references: [id])
+  subject_id        Int
+
+  @@unique([subject_id, mbti])
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email        String   @unique
+  password      String
+  nickname        String
+  image_url        String?
+  created_at        DateTime    @default(now())
+  updated_at        DateTime?   @default(now())
+  deleted_at        DateTime?
+  access_token      String?
+  refresh_token      String?
+}
